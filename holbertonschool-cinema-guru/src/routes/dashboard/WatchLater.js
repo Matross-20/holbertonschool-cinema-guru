@@ -1,28 +1,32 @@
-import axios from 'axios';
-import { useEffect, useState } from 'react';
 import './dashboard.css';
-import Movies from '../../components/movies/Movies';
+import axios from 'axios';
+import React, { useState, useEffect } from 'react';
+import MovieCard from '../../components/movies/MovieCard';
 
-const WatchLater = () => {
-	const [movies, setMovies] = useState([]);
-	const [favorites, setFavorites] = useState([]);
-	const [watchLater, setWatchLater] = useState([]);
-	useEffect(() => {
-		const accessToken = localStorage.getItem('accessToken')
-		axios.get('http://localhost:8000/api/titles/watchLater/', {
-			headers: {
-				authorization: `Bearer ${accessToken}`
-			}
-		}).then(response => {
-			setMovies(response.data)
-		})
-	}, []);
-	return (
-		<div className="personal-moovies">
-			<h1>Movies to watch later</h1>
-			<Movies movies={movies} favorites={favorites} watchLater={watchLater} setFavorites={setFavorites} setWatchLater={setWatchLater} />
-		</div>
-	);
+export default function WatchLater() {
+    const [movies, setMovies] = useState([]);
+
+    useEffect(() => {
+        const accessToken = localStorage.getItem('accessToken');
+        const headers = {authorization: `Bearer ${accessToken}`};
+
+        axios.get("http://localhost:8000/api/titles/watchlater/", { headers })
+        .then((res) => setMovies(res.data));
+    
+    }, []);
+
+    return (
+        <div className='watchlater'>
+            <h1 className='main-title'>Movies to watch later</h1>
+            <ul className={'movies-list'}>
+                {movies.length > 0 ?
+                movies.map((movie) => <MovieCard key={movie.id} movie={movie} />) :
+                (<div>
+                   <img src='https://i.gifer.com/VK11.gif' alt='titanic' />
+                    <p>Nothing here... ;)</p> 
+                </div>
+                )}
+            </ul>
+        </div>
+    );
 }
-
-export default WatchLater;

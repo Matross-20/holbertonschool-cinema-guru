@@ -1,17 +1,30 @@
 import './general.css';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faSearch } from '@fortawesome/free-solid-svg-icons'
+import React from 'react';
+import PropTypes from 'prop-types';
 
-const SearchBar = (title, setTitle) => {
-  const hendleInput = (event) => {
-    setTitle(event.target.value)
-  }
-  return (
-    <div className="search-bar">
-      <FontAwesomeIcon icon={faSearch} className="icon" />
-      <input type="text" placeholder="Search Movies" value={title} onChange={hendleInput} />
-    </div>
-  );
+export default function SearchBar(props) {
+    const { title, setTitle } = props;
+
+    function handleInput(e) {
+        setTitle(e.target.value);
+    }
+
+    return (
+        <input
+        className='search-bar'
+        type='search'
+        placeholder='Search movies'
+        value={title}
+        onChange={handleInput}/>
+    );
 }
 
-export default SearchBar;
+SearchBar.propTypes = {
+    title: PropTypes.string,
+    setTitle: PropTypes.func
+}
+
+SearchBar.defaultProps = {
+    title: "",
+    setTitle:() => {}
+}

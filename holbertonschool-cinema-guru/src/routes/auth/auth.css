@@ -1,52 +1,35 @@
+body {
+  background: #222222;
+  height: 100vh;
+}
+
+
+
+/* Authentication */
+
 .authentication {
-	padding: 0;
-	margin: 0;
-	background-color: #222222;
-	min-width: 450px;
-	height: 100%;
+  text-align: center;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  margin-right: -50%;
+  transform: translate(-50%, -50%);
+  width: 80%;
+  max-width: 450px;
+  background-color: #FFFFFF;
 }
 
-.authentication header ul {
-	display: flex;
-	justify-content: space-evenly;
+.authentication h3 {
+  font-weight: normal;
 }
 
-.authentication header ul li {
-	background-color: #BB000E;
-	font-weight: bold;
-	display: flex;
-	justify-content: center;
-	align-items: center;
-	width: 100%;
-	height: 3rem;
-	cursor: pointer;
-	transition: 0.6s;
-	font-family: "Roboto", sans-serif;
-}
 
-.authentication header ul li.active {
-	font-weight: bolder;
-	background-color: #E31C25;
-}
 
-.authentication main {
-	color: #1C1C1C;
-	display: flex;
-	flex-direction: column;
-	padding: 1.3rem 3rem;
-	box-sizing: border-box;
-	justify-content: space-evenly;
-	height: 90%;
-}
+/* Login / Register */
 
-.authentication .authentication-header {
-	text-align: center;
-	font-weight: bolder;
-	font-size: 1.2rem;
-	margin: 1.5rem 0;
-}
-
-.authentication .submit-button {
-	margin-top: 1rem;
-	margin-left: auto;
+.login, .register {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 25px 40px;
 }

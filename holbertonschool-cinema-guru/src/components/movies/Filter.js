@@ -1,47 +1,105 @@
 import './movies.css';
-import Tag from './Tag'
+import Tag from './Tag';
+import React from 'react';
+import PropTypes from 'prop-types';
+import Input from '../general/Input';
 import SearchBar from '../general/SearchBar';
 import SelectInput from '../general/SelectInput';
-import NumberInput from '../general/NumberInput';
 
-const Filter = ({ minYear, setMinYear, maxYear, setMaxYear, sort, setSort, genres, setGenres, title, setTitle }) => {
-	const sortOptions = [
-		{ value: "", label: "Default"},
-		{ value: "latest", label: "Latest"},
-		{ value: "oldest",},
-		{ value: "highestrated", label: "Highest Rated"},
-		{ value: "lowestrated", label: "Lowest Rated"}
-	]
-	const genreOptions = [
-		{ value: "action", label: "Action" },
-		{ value: "drama", label: "Drama" },
-		{ value: "comedy", label: "Comedy" },
-		{ value: "biography", label: "Biography" },
-		{ value: "romance", label: "Romance" },
-		{ value: "thriller", label: "Thriller" },
-		{ value: "war", label: "War" },
-		{ value: "history", label: "History" },
-		{ value: "sport", label: "Sport" },
-		{ value: "sci-fi", label: "Sci-Fi" },
-		{ value: "documentary", label: "Documentary" },
-		{ value: "crime", label: "Crime" },
-		{ value: "fantasy", label: "Fantasy" }
-	]
-	return (
-		<div className='movies-filter'>
-			<ul className="filter-section">
-				<li><SearchBar title={title} setTitle={setTitle} /></li>
-				<li><NumberInput label="Min Date" min={1970} max={2022} step={1} value={minYear} setValue={setMinYear} /></li>
-				<li><NumberInput label="Max Date" min={1970} max={2022} step={1} value={maxYear} setValue={setMaxYear} /></li>
-				<li>
-					<SelectInput label="Sort" options={sortOptions} multiple={false} value={sort} setValue={setSort} />
-				</li>
-			</ul>
-			<ul className='filter-section-2'>
-				{genreOptions.map((genre, idx) => <Tag key={`tag-${idx}`} genre={genre.label} genres={genres} setGenres={setGenres} filter={true} />)}
-			</ul>
-		</div>
-	)
+const options = [
+    { value: '', text: "Default"},
+    { value: 'latest', text: 'Latest' },
+    { value: 'oldest', text: 'Oldest' },
+    { value: 'highestrated', text: 'Highest rated' },
+    { value: 'lowestrated', text: 'Lowest rated' },
+];
+
+const tags = ['Action','Drama', 'Comedy', 'Biography', 'Romance', 'Thriller',
+    'War', 'History', 'Sport', 'Sci-Fi', 'Documentary', 'Crime', 'Fantasy', ];
+
+export default function Filter(props) {
+    const {
+        minYear,
+        setMinYear,
+        maxYear,
+        setMaxYear,
+        sort,
+        setSort,
+        genres,
+        setGenres,
+        title,
+        setTitle
+    } = props;
+
+    return (
+        <div className='filter'>
+            <div className='left-part'>
+                <div className='search'>
+                    <SearchBar title={title} setTitle={setTitle}/>
+                </div>
+                <div className='inputs'>
+                   <Input
+                    label='Min Date:'
+                    type='number'
+                    className='form-group dark'
+                    value={minYear}
+                    setValue={setMinYear}/>
+
+                    <Input
+                    label='Max Date:'
+                    type='number'
+                    className='form-group dark'
+                    value={maxYear}
+                    setValue={setMaxYear}/>
+
+                    <SelectInput
+                    label='Sort:'
+                    options={options}
+                    Multiple={false}
+                    className='select-group'
+                    value={sort}
+                    setValue={setSort}/> 
+                </div>
+            </div>
+            
+            <div className='right-part'>
+                <ul className='tags'>
+                    {tags.map((genre) => <Tag key={genre} genre={genre} genres={genres.split(',')} setGenres={setGenres} filter={true}/>)}
+                </ul>
+            </div>
+            
+        </div>
+    );
 }
 
-export default Filter;
+Filter.propTypes = {
+    minYear: PropTypes.oneOfType([
+        PropTypes.string,
+        PropTypes.number
+    ]),
+    setMinYear: PropTypes.func,
+    maxYear: PropTypes.oneOfType([
+        PropTypes.string,
+        PropTypes.number
+    ]),
+    setMaxYear: PropTypes.func,
+    sort: PropTypes.string,
+    setSort: PropTypes.func,
+    genres: PropTypes.string,
+    setGenres: PropTypes.func,
+    title: PropTypes.string,
+    setTitle: PropTypes.func
+}
+
+Filter.defaultProps = {
+    minYear: 0,
+    setMinYear: () => {},
+    maxYear: 0,
+    setMaxYear: () => {},
+    sort: '',
+    setSort: () => {},
+    genres: '',
+    setGenres: () => {},
+    title: '',
+    setTitle: () => {}
+}

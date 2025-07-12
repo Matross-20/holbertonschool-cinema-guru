@@ -1,58 +1,71 @@
 import './navigation.css';
-import { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faArrowRight, faClock, faFolder, faStar } from '@fortawesome/free-solid-svg-icons';
 import Activity from '../Activity';
+import { useNavigate } from 'react-router-dom'
+import React, { useState, useEffect } from 'react';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { faFolder, faStar, faClock, faArrowRight } from '@fortawesome/free-solid-svg-icons';
 
+export default function SideBar() {
+    const [selected, setSelected] = useState("home");
+    const [small, setSmall] = useState(true);
+    const [activities, setActivities] = useState([]);
+    const [showActivitiesboolean, setShowActivitiesboolean] = useState(false);
 
-const SideBar = () => {
-	const [selected, setSelected] = useState("home")
-	const [small, setSmall] = useState(true)
-	const [activities, setActivities] = useState([])
-	const [showActivities, setShowActivities] = useState(false)
-	const navigate = useNavigate()
-	function setPage(pageName) {
-		setSelected(pageName)
-		navigate(pageName)
-	}
-	useEffect(() => {
-		const accessToken = localStorage.getItem('accessToken')
-		axios.get("https://localhost:8000/api/activity", {
-			headers: {
-				authorization: `Bearer ${accessToken}`
-			}
-		}).then(response => setActivities(response.data))
-	}, []);
-	return (
-		<div className='sidebar'>
-			<ul>
-				<li className={selected === 'home' ? 'active-item' : 'sidebar-item'} onClick={() => setPage("home")}>
-					<FontAwesomeIcon icon={faFolder} className="mainIcon" />
-					<h2>Home</h2>
-					<FontAwesomeIcon icon={faArrowRight} className="arrowIcon" />
-				</li>
-				<li className={selected === 'favorites' ? 'active-item' : 'sidebar-item'} onClick={() => setPage("favorites")}>
-					<FontAwesomeIcon icon={faStar} className="mainIcon" />
-					<h2>Favorites</h2>
-					<FontAwesomeIcon icon={faArrowRight} className="arrowIcon" />
-				</li>
-				<li className={selected === 'watchlater' ? 'active-item' : 'sidebar-item'} onClick={() => setPage("watchlater")}>
-					<FontAwesomeIcon icon={faClock} className="mainIcon" />
-					<h2>Watch Later</h2>
-					<FontAwesomeIcon icon={faArrowRight} className="arrowIcon" />
-				</li>
-			</ul>
-			<div className='activities'>
-				<h1>Latest Activities</h1>
-				{activities.map(activity => (
-					<Activity key={activity.id} username={activity.username} title={activity.title} date={activity.date}
-					/>
-				))}
-			</div>
-		</div>
-	)
+    const navigate = useNavigate()
+
+    function setPage(pageName) {
+        setSelected(pageName);
+        navigate(`/${pageName}`);
+    }
+
+    useEffect(() => {
+        const accessToken = localStorage.getItem('accessToken');
+        const headers = {authorization: `Bearer ${accessToken}`}
+
+        axios.get("http://localhost:8000/api/activity", { headers })
+        .then((res) => setActivities(res.data));
+    }, [showActivitiesboolean]);
+
+    return (
+        <nav className={small ? 'sidebar small' : 'sidebar'}
+        onMouseEnter={() => {setSmall(!small); setShowActivitiesboolean(!showActivitiesboolean)}}
+        onMouseLeave={() => {setSmall(!small); setShowActivitiesboolean(!showActivitiesboolean)}}>
+            <ul className='sidebar-navigation'>
+                <li className={selected === 'home' ? 'navigation-item active' : 'navigation-item'}
+                onClick={() => {setPage('home')}}>
+                    <div>
+                       <FontAwesomeIcon icon={faFolder}/>
+                        <p>{!small && 'Home'}</p> 
+                    </div>
+                    {selected === 'home'&& !small && <FontAwesomeIcon icon={faArrowRight}/>}
+                </li>
+                <li className={selected === 'favorites' ? 'navigation-item active' : 'navigation-item'}
+                onClick={() => {setPage('favorites')}}>
+                    <div>
+                        <FontAwesomeIcon icon={faStar}/>
+                        <p>{!small && 'Favorites'}</p>
+                    </div>
+                    {selected === 'favorites' && !small && <FontAwesomeIcon icon={faArrowRight}/>}
+                </li>
+                <li className={selected === 'watchlater' ? 'navigation-item active' : 'navigation-item'}
+                onClick={() => {setPage('watchlater')}}>
+                    <div>
+                        <FontAwesomeIcon icon={faClock}/>
+                        <p>{!small && 'Watch Later'}</p>
+                    </div>
+                    {selected === 'watchlater' && !small && <FontAwesomeIcon icon={faArrowRight}/>}
+                </li>
+            </ul>
+            {showActivitiesboolean &&
+            <div className='activities'>
+                <h3>Latest Activities</h3>
+                <ul className='latest'>
+                    {activities.length !== 0 && activities.slice(0, 10).map((activity) => <Activity key={activity.id} activity={activity}/>)}
+                    {activities.length === 0 && <p>Nothing to see here...</p>}
+                </ul>
+            </div>
+            }
+        </nav>
+    );
 }
-
-export default SideBar;
